@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.smart.wds.init.runtime">
+
+    <application>
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup">
+            <meta-data
+                android:name="com.smart.wds.init.runtime.init.LibInitDep"
+                android:value="androidx.startup" />
+        </provider>
+
+    </application>
+
+
+
+</manifest>
