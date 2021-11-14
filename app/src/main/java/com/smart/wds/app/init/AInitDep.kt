@@ -2,20 +2,22 @@ package com.smart.wds.app.init
 
 import android.content.Context
 import androidx.startup.Initializer
+import com.smart.wds.init.runtime.AbstractInitializer
+import com.smart.wds.init.runtime.ThreadEnv
 
-class AInitDep : Initializer<AInitDep.Dependency> {
-    override fun create(context: Context): Dependency {
+class AInitDep : AbstractInitializer<AInitDep.Dependency>() {
 
+
+    class Dependency {
+    }
+
+    override fun onCreate(context: Context): Dependency? {
         println("AInitDep========")
         return Dependency()
-
     }
 
-    override fun dependencies(): MutableList<Class<out Initializer<*>>> {
-        return mutableListOf();
-    }
+    override fun needWaitMain(): Boolean = false
 
-    class Dependency{
-    }
+    override fun callOnThread(): ThreadEnv = ThreadEnv.MAIN
 
 }

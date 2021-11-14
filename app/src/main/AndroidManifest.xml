@@ -23,11 +23,11 @@
 
 
         <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="${applicationId}.androidx-startup">
+            android:name="com.smart.wds.init.runtime.provider.InitializationProvider"
+            android:authorities="${applicationId}.android_startup">
             <meta-data
                 android:name="com.smart.wds.app.init.CInitDep"
-                android:value="androidx.startup" />
+                android:value="android_startup" />
         </provider>
     </application>
 

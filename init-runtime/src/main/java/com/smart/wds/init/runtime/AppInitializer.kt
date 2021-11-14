@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.content.pm.ProviderInfo
 import com.smart.wds.init.runtime.exception.StartupException
 import com.smart.wds.init.runtime.extensions.getUniqueKey
+import com.smart.wds.init.runtime.model.InitializerStore
 import com.smart.wds.init.runtime.provider.InitializationProvider
 import java.util.HashSet
 
@@ -29,9 +30,8 @@ class AppInitializer {
         }
     }
 
-    internal fun discoverAndInitialize(context: Context) {
+    internal fun discoverAndInitialize(context: Context): InitializerStore {
         val mContext: Context = context.applicationContext
-
         try {
             val provider = ComponentName(
                 mContext.packageName,
@@ -58,6 +58,8 @@ class AppInitializer {
                     }
                 }
             }
+
+            return InitializerStore(result)
 
 
         } catch (exception: Throwable) {
