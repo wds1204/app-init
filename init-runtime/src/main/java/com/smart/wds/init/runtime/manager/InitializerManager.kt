@@ -7,7 +7,6 @@ import com.smart.wds.init.runtime.dispatcher.InitPerformDispatcher
 import com.smart.wds.init.runtime.dispatcher.PerformDispatcher
 import com.smart.wds.init.runtime.topologySort.Solution
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 class InitializerManager(
@@ -17,7 +16,7 @@ class InitializerManager(
 ) {
     private var mCountDownLatch: CountDownLatch? = null
     private val performDispatcher: PerformDispatcher by lazy {
-        InitPerformDispatcher(context)
+        InitPerformDispatcher(context,mCountDownLatch,mNeedAwaitCount)
     }
 
     fun start() = apply {
@@ -32,7 +31,8 @@ class InitializerManager(
 
     fun await() {
         try {
-            mCountDownLatch?.await(1500, TimeUnit.MILLISECONDS)
+//            mCountDownLatch?.await(1500, TimeUnit.MILLISECONDS)
+            mCountDownLatch?.await()
         } catch (e: InterruptedException) {
             e.printStackTrace()
         }
