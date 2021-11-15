@@ -5,15 +5,15 @@ import androidx.startup.Initializer
 import com.smart.wds.init.runtime.AbstractInitializer
 import com.smart.wds.init.runtime.ThreadEnv
 
-class AInitDep : AbstractInitializer<AInitDep.Dependency>() {
+class AInitDep : AbstractInitializer<AInitDep.ADependency>() {
 
 
-    class Dependency {
+    class ADependency {
     }
 
-    override fun onCreate(context: Context): Dependency? {
+    override fun onCreate(context: Context): ADependency? {
         println("AInitDep========")
-        return Dependency()
+        return ADependency()
     }
 
     override fun needWaitMain(): Boolean = false

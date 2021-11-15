@@ -1,53 +1,82 @@
-package com.smart.wds.init.runtime.topological
+package com.smart.wds.init.runtime.topologySort
 
+import com.smart.wds.init.runtime.AbstractInitializer
+import com.smart.wds.init.runtime.Initializer
+import com.smart.wds.init.runtime.ThreadEnv
+import com.smart.wds.init.runtime.exception.StartupException
+import com.smart.wds.init.runtime.extensions.getUniqueKey
+import com.smart.wds.init.runtime.model.InitSortStore
 import java.util.*
 
-
-fun main(args:Array<String>){
-//    val prerequisites =
-//        arrayOf(intArrayOf(1, 0), intArrayOf(2, 0), intArrayOf(3, 1), intArrayOf(3, 2))
-//    val num = 4
-//    val orders = Solution.topSort(num, prerequisites)
-//    for (order in orders!!) {
-//        print(order.toString() + "\t")
-//    }
-//    print("\n")
+fun main(args: Array<String>) {
 
 }
+
 internal object Solution {
 
-    fun topSort(num: Int, prerequisites: Array<IntArray>): IntArray? {
-        if (num == 0) return IntArray(0)
-        val inDegree = IntArray(num)
-        for (array in prerequisites) {
-            inDegree[array[0]]++
-        }
-        val queue: Queue<Int> = LinkedList()
-        for (i in inDegree.indices) {
-            if (inDegree[i] == 0) {
-                queue.add(i)
-            }
-        }
-        val result = ArrayList<Int>()
-        while (!queue.isEmpty()) {
-            val key = queue.poll()
-            result.add(key)
-            //再次遍历课程
-            for (p in prerequisites) {
-                if (key == p[1]) {
-                    inDegree[p[0]]--
-                    if (inDegree[p[0]] == 0) {
-                        queue.add(p[0])
+    fun topSort(initList: List<Initializer<*>>): InitSortStore {
+        val sortList = arrayListOf<Initializer<*>>()
+        val mainResult = arrayListOf<Initializer<*>>()
+        val ioResult = arrayListOf<Initializer<*>>()
+        val inDegreeMap = hashMapOf<String, Int>()
+        val zeroDequen = LinkedList<String>()
+        val allStartInit = hashMapOf<String, Initializer<*>>()
+        val initChildrenMap = hashMapOf<String, MutableList<String>>()
+        initList.forEach {
+            val uniqueKey = it::class.java.getUniqueKey()
+            if (allStartInit[uniqueKey] == null) {
+                allStartInit[uniqueKey] = it
+                inDegreeMap[uniqueKey] = it.dependencies()?.size ?: 0
+
+                if (it.dependencies().isNullOrEmpty()) {
+                    zeroDequen.add(uniqueKey)
+                } else {
+                    it.dependencies()?.forEach { parent ->
+                        val parentUniqueKey = parent.getUniqueKey()
+                        if (initChildrenMap[parentUniqueKey] == null) {
+                            initChildrenMap[parentUniqueKey] = arrayListOf()
+                        }
+                        initChildrenMap[parentUniqueKey]?.add(uniqueKey)
                     }
                 }
             }
         }
-        if (result.size != num) return IntArray(0)
-        val array = IntArray(num)
-        for (i in result.indices) {
-            array[i] = result[i]
+
+
+        while (!zeroDequen.isEmpty()) {
+            zeroDequen.poll()?.let {
+                allStartInit[it]?.let { initializer ->
+                    sortList.add(initializer)
+                    //区分main 、io
+                    if (initializer.callOnThread() == ThreadEnv.IO) {
+                        ioResult.add(initializer)
+                    } else {
+                        mainResult.add(initializer)
+                    }
+                }
+                //children的入度减一
+                initChildrenMap[it]?.forEach { children ->
+                    inDegreeMap[children] = inDegreeMap[children]?.minus(1) ?: 0
+                    if (inDegreeMap[children] == 0) {
+                        zeroDequen.add(children)
+                    }
+                }
+            }
         }
-        return array
+
+        if (sortList.size != allStartInit.size) {
+            throw StartupException("lack of dependencies or have circle dependencies.")
+        }
+
+        val result = mutableListOf<Initializer<*>>().apply {
+            addAll(ioResult)
+            addAll(mainResult)
+        }
+
+        return InitSortStore(result, allStartInit, initChildrenMap)
+
+
     }
+
 
 }

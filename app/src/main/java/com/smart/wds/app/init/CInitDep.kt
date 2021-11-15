@@ -20,6 +20,13 @@ class CInitDep: AbstractInitializer<CInitDep.Dependency>() {
         return Dependency()
     }
 
+    override fun onDependenciesCompleted(initializer: Initializer<*>, result: Any?) {
+        super.onDependenciesCompleted(initializer, result)
+
+        println("CInitDep========initializer====${initializer}  result===${result}")
+
+    }
+
     override fun needWaitMain(): Boolean =false
 
     override fun callOnThread(): ThreadEnv =ThreadEnv.MAIN

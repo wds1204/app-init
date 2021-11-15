@@ -2,8 +2,9 @@ package com.smart.wds.init.runtime
 
 import android.content.Context
 import com.smart.wds.init.runtime.dispatcher.Dispatcher
+import com.smart.wds.init.runtime.execute.InitExecute
 
-interface Initializer<T> : Dispatcher {
+interface Initializer<T> : Dispatcher , InitExecute {
     /**
      * [context] The application context
      */

@@ -15,7 +15,7 @@ class InitializationProvider : ContentProvider() {
             val store = AppInitializer.mInstance.discoverAndInitialize(context!!)
             InitializerManager.Builder()
                 .addAllInitializer(store.result)
-                .build(context!!)
+                .build(it)
                 .start()
                 .await()
         } ?: throw StartupException("Context cannot be null")

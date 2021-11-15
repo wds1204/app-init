@@ -1,7 +1,9 @@
 package com.smart.wds.init.runtime
 
 import android.content.Context
+import com.smart.wds.init.runtime.execute.ExecutorManager
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executor
 
 abstract class AbstractInitializer<T> : Initializer<T> {
 
@@ -25,4 +27,6 @@ abstract class AbstractInitializer<T> : Initializer<T> {
 
     override fun onDependenciesCompleted(initializer: Initializer<*>, result: Any?) {
     }
+
+    override fun createExecutor(): Executor =ExecutorManager.instance.ioExecutor
 }
