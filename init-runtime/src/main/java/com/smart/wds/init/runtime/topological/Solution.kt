@@ -19,7 +19,7 @@ internal object Solution {
         val mainResult = arrayListOf<Initializer<*>>()
         val ioResult = arrayListOf<Initializer<*>>()
         val inDegreeMap = hashMapOf<String, Int>()
-        val zeroDequen = LinkedList<String>()
+        val zeroDeque = LinkedList<String>()
         val allStartInit = hashMapOf<String, Initializer<*>>()
         val initChildrenMap = hashMapOf<String, MutableList<String>>()
         initList.forEach {
@@ -29,7 +29,7 @@ internal object Solution {
                 inDegreeMap[uniqueKey] = it.dependencies()?.size ?: 0
 
                 if (it.dependencies().isNullOrEmpty()) {
-                    zeroDequen.add(uniqueKey)
+                    zeroDeque.add(uniqueKey)
                 } else {
                     it.dependencies()?.forEach { parent ->
                         val parentUniqueKey = parent.getUniqueKey()
@@ -43,8 +43,8 @@ internal object Solution {
         }
 
 
-        while (!zeroDequen.isEmpty()) {
-            zeroDequen.poll()?.let {
+        while (!zeroDeque.isEmpty()) {
+            zeroDeque.poll()?.let {
                 allStartInit[it]?.let { initializer ->
                     sortList.add(initializer)
                     //区分main 、io
@@ -58,7 +58,7 @@ internal object Solution {
                 initChildrenMap[it]?.forEach { children ->
                     inDegreeMap[children] = inDegreeMap[children]?.minus(1) ?: 0
                     if (inDegreeMap[children] == 0) {
-                        zeroDequen.add(children)
+                        zeroDeque.add(children)
                     }
                 }
             }

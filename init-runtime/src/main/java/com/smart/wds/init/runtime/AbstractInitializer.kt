@@ -7,11 +7,12 @@ import java.util.concurrent.Executor
 
 abstract class AbstractInitializer<T> : Initializer<T> {
 
-    private val countDownLatch = CountDownLatch(dependencies()?.size ?: 0)
+    private val n1 = dependencies()?.size ?: 0
+    private val countDownLatch = CountDownLatch(n1)
     override fun await() {
         try {
             countDownLatch.await()
-        }catch (e:InterruptedException){
+        } catch (e: InterruptedException) {
 
         }
     }
@@ -20,13 +21,12 @@ abstract class AbstractInitializer<T> : Initializer<T> {
         countDownLatch.countDown()
     }
 
+    override fun dependencies(): List<Class<out Initializer<*>>>? = null
 
-    override fun dependencies(): List<Class<out Initializer<*>>>?=null
-    //TODO
-    override fun classDependencies(): List<String>? =null
+    override fun classDependencies(): List<String>? = null
 
     override fun onDependenciesCompleted(initializer: Initializer<*>, result: Any?) {
     }
 
-    override fun createExecutor(): Executor =ExecutorManager.instance.ioExecutor
+    override fun createExecutor(): Executor = ExecutorManager.instance.ioExecutor
 }

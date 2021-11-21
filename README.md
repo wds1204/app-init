@@ -38,12 +38,8 @@ BFS
 >输入：numCourses = 1, prerequisites = []
 >输出：[0]
 
-来源：力扣（LeetCode）
-链接：https://leetcode-cn.com/problems/course-schedule-ii
-著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-
-[leetcode算法题](https://leetcode-cn.com/problems/course-schedule-ii/)
+[leetode算法题](https://leetcode-cn.com/problems/course-schedule-ii/)
 
 ```java 
     public int[] findOrder(int numCourses, int[][] prerequisites) {
@@ -123,17 +119,14 @@ B和C为async，且B需要让主线程await。这四个任务最外测线程控�
 任务和任务之间的关系其实就是以下四种
 ![场景二](/imgs/img2.png)
 
-1）这种情况无需考虑
-2）先执行a,因为是异步的的，b接下来也就执就执行了。所以说在b执行之前先await()，
-当b执行完notify它的child(b) countDown()。如果count为0接下来执行b.
-3）而1中是一样的
-4）和2的情况一致
+1）这种情况无需考虑 2）先执行a,因为是异步的的，b接下来也就执就执行了。所以说在b执行之前先await()， 当b执行完notify它的child(b) countDown()
+。如果count为0接下来执行b. 3）而1中是一样的 4）和2的情况一致
+
+tip:小优化 1、把排序后的任务分成异步和同步两个集合 2、先执行异步任务集合 3、在执行同步任务集合
 
 
-tip:小优化
-1、把排序后的任务分成异步和同步两个集合
-2、先执行异步任务集合
-3、在执行同步任务集合
+
+
 
 
 
