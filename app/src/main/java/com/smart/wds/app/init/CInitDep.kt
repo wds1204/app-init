@@ -11,7 +11,6 @@ class CInitDep: AbstractInitializer<CInitDep.Dependency>() {
 
     }
 
-
     override fun dependencies(): List<Class<out Initializer<*>>>? {
         return mutableListOf(AInitDep::class.java,BInitDep::class.java)
     }
@@ -22,7 +21,6 @@ class CInitDep: AbstractInitializer<CInitDep.Dependency>() {
 
     override fun onDependenciesCompleted(initializer: Initializer<*>, result: Any?) {
         super.onDependenciesCompleted(initializer, result)
-
         println("CInitDep========initializer====${initializer}  result===${result}")
 
     }

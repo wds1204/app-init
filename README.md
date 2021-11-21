@@ -1,5 +1,84 @@
 # app-init
 
+#### 介入
+###### 初始化
+```xml
+
+        <provider
+            android:name="com.smart.wds.init.runtime.provider.InitializationProvider"
+            android:authorities="${applicationId}.android_startup">
+            <meta-data
+                android:name="com.smart.wds.app.init.CInitDep"
+                android:value="android_startup" />
+        </provider>
+```
+###### 初始化任务
+
+```kotlin
+
+class CInitDep: AbstractInitializer<CInitDep.Dependency>() {
+
+    class Dependency{
+
+    }
+
+    override fun dependencies(): List<Class<out Initializer<*>>>? {
+        return mutableListOf(AInitDep::class.java,BInitDep::class.java)
+    }
+    override fun onCreate(context: Context): Dependency? {
+        println("CInitDep========")
+        return Dependency()
+    }
+
+    override fun onDependenciesCompleted(initializer: Initializer<*>, result: Any?) {
+        super.onDependenciesCompleted(initializer, result)
+        println("CInitDep========initializer====${initializer}  result===${result}")
+
+    }
+
+    override fun needWaitMain(): Boolean =false
+
+    override fun callOnThread(): ThreadEnv =ThreadEnv.MAIN
+}
+
+class BInitDep: AbstractInitializer<BInitDep.BDependency>() {
+
+    class BDependency{
+
+    }
+
+    override fun onCreate(context: Context): BDependency? {
+        println("BInitDep========sleep2000")
+        Thread.sleep(2000)
+        return BDependency()
+    }
+    //需要main线程等待
+    override fun needWaitMain(): Boolean =true
+    //B任务运行在子线程中
+    override fun callOnThread(): ThreadEnv = ThreadEnv.IO
+
+
+}
+
+class AInitDep : AbstractInitializer<AInitDep.ADependency>() {
+
+
+    class ADependency {
+    }
+
+    override fun onCreate(context: Context): ADependency? {
+        println("AInitDep========")
+        return ADependency()
+    }
+    //不需要main线程等待
+    override fun needWaitMain(): Boolean = false
+    //A任务运行在子线程中
+    override fun callOnThread(): ThreadEnv = ThreadEnv.IO
+
+}
+```
+
+
 任务初始化组建
 
 一个相对复杂的app在启动时通常会初始化很多第三方任务，而app的启动时间又是很敏感，这是我们把这些任务放到子线程中执行。
