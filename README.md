@@ -29,7 +29,7 @@ class CInitDep : AbstractInitializer<CInitDep.Dependency>() {
         println("CInitDep========")
         return Dependency()
     }
-
+     //依赖任务完成后的回调   
     override fun onDependenciesCompleted(initializer: Initializer<*>, result: Any?) {
         super.onDependenciesCompleted(initializer, result)
         println("CInitDep========initializer====${initializer}  result===${result}")
